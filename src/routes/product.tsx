@@ -75,8 +75,9 @@ function ProductPage() {
         <section className="mx-auto grid max-w-6xl gap-12 px-5 py-14 lg:grid-cols-2">
           <div>
             <img
-              src={gallery[active].src}
-              alt={gallery[active].alt}
+              src={current.src}
+              alt={current.alt}
+
               width={1200}
               height={900}
               className="aspect-4/3 w-full rounded-md border border-border object-cover"
