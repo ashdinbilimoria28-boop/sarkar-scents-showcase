@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
 
 const navLinks = [
-  { label: "Home", to: "/" as const, hash: undefined },
-  { label: "Product Details", to: "/product" as const, hash: undefined },
+  { label: "Home", to: "/" as const },
+  { label: "Product Details", to: "/product" as const },
   { label: "Reviews", to: "/" as const, hash: "reviews" },
   { label: "Contact", to: "/" as const, hash: "contact" },
 ];
+
 
 export function Header() {
   return (
@@ -21,12 +22,13 @@ export function Header() {
             <Link
               key={l.label}
               to={l.to}
-              hash={l.hash}
+              {...(l.hash ? { hash: l.hash } : {})}
               className="text-sm uppercase tracking-widest text-muted-foreground transition-colors hover:text-primary"
             >
               {l.label}
             </Link>
           ))}
+
         </nav>
 
         <Link

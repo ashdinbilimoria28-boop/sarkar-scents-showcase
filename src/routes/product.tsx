@@ -63,8 +63,10 @@ const specs: [string, string][] = [
 
 function ProductPage() {
   const [active, setActive] = useState(0);
-  const [size, setSize] = useState(sizes[1]);
-  const [edition, setEdition] = useState(editions[0]);
+  const [size, setSize] = useState<string>(sizes[1] ?? "100 ml");
+  const [edition, setEdition] = useState<string>(editions[0] ?? "Sports Classic");
+  const current = gallery[active] ?? gallery[0]!;
+
 
   return (
     <div className="min-h-screen">
