@@ -8,6 +8,8 @@ import productMain from "@/assets/product-main.jpg";
 import product2 from "@/assets/product-2.jpg";
 import product3 from "@/assets/product-3.jpg";
 import product4 from "@/assets/product-4.jpg";
+import { useCart } from "@/lib/cart";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/product")({
   head: () => ({
@@ -66,7 +68,12 @@ function ProductPage() {
   const [size, setSize] = useState<string>(sizes[1] ?? "100 ml");
   const [edition, setEdition] = useState<string>(editions[0] ?? "Sports Classic");
   const current = gallery[active] ?? gallery[0]!;
+  const { addItem } = useCart();
 
+  const add = () => {
+    addItem({ name: "SARKAR SPORTS Eau de Parfum", size, edition, price: 2499 });
+    toast.success("Added to bag", { description: `${size} · ${edition}` });
+  };
 
   return (
     <div className="min-h-screen">
