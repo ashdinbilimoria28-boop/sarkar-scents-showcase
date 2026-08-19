@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductRouteImport } from './routes/product'
+import { Route as SupportRouteImport } from './routes/support'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const ProductRoute = ProductRouteImport.update({
   path: '/product',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/product': typeof ProductRoute
+  '/support': typeof SupportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/product': typeof ProductRoute
+  '/support': typeof SupportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/product': typeof ProductRoute
+  '/support': typeof SupportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/product'
+  fullPaths: '/' | '/product' | '/support'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/product'
-  id: '__root__' | '/' | '/product'
+  to: '/' | '/product' | '/support'
+  id: '__root__' | '/' | '/product' | '/support'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ProductRoute: typeof ProductRoute
+  SupportRoute: typeof SupportRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ProductRoute: ProductRoute,
+  SupportRoute: SupportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
