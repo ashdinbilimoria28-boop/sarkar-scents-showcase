@@ -11,14 +11,22 @@ export function Footer() {
             Performance fragrances engineered for movement. Bold, clean, long-lasting.
           </p>
           <div className="mt-5 flex gap-3">
-            {[Instagram, Facebook, Twitter, Youtube].map((Icon, i) => (
-              <span
-                key={i}
+            {[
+              { Icon: Instagram, label: "Instagram", href: "https://instagram.com" },
+              { Icon: Facebook, label: "Facebook", href: "https://facebook.com" },
+              { Icon: Twitter, label: "Twitter", href: "https://twitter.com" },
+              { Icon: Youtube, label: "YouTube", href: "https://youtube.com" },
+            ].map(({ Icon, label, href }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label={`SARKAR Fragrances on ${label}`}
                 className="flex size-9 items-center justify-center rounded-sm border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                aria-label="Social media link placeholder"
               >
                 <Icon className="size-4" />
-              </span>
+              </a>
             ))}
           </div>
         </div>
@@ -52,21 +60,33 @@ export function Footer() {
         <div>
           <h3 className="text-sm uppercase tracking-[0.2em] text-foreground">Support</h3>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-            <li>Shipping &amp; Returns</li>
-            <li>Authenticity Promise</li>
-            <li>Fragrance Guide</li>
-            <li>FAQ</li>
+            {[
+              { label: "Shipping & Returns", hash: "shipping" },
+              { label: "Authenticity Promise", hash: "authenticity" },
+              { label: "Fragrance Guide", hash: "guide" },
+              { label: "FAQ", hash: "faq" },
+            ].map((l) => (
+              <li key={l.hash}>
+                <Link to="/support" hash={l.hash} className="hover:text-primary">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
         <div>
           <h3 className="text-sm uppercase tracking-[0.2em] text-foreground">Contact</h3>
           <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
-            <li className="flex items-center gap-2">
-              <Mail className="size-4 text-primary" /> care@sarkarfragrances.com
+            <li>
+              <a href="mailto:care@sarkarfragrances.com" className="flex items-center gap-2 hover:text-primary">
+                <Mail className="size-4 text-primary" /> care@sarkarfragrances.com
+              </a>
             </li>
-            <li className="flex items-center gap-2">
-              <Phone className="size-4 text-primary" /> +91 98200 00000
+            <li>
+              <a href="tel:+919820000000" className="flex items-center gap-2 hover:text-primary">
+                <Phone className="size-4 text-primary" /> +91 98200 00000
+              </a>
             </li>
             <li className="flex items-start gap-2">
               <MapPin className="mt-0.5 size-4 text-primary" /> 14 Marine Drive, Mumbai 400020
