@@ -168,7 +168,7 @@ function Home() {
         </section>
 
         {/* Reviews */}
-        <section id="reviews" className="border-y border-border bg-[var(--surface)]">
+        <section id="reviews" className="scroll-mt-24 border-y border-border bg-[var(--surface)]">
           <div className="mx-auto max-w-6xl px-5 py-20">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>

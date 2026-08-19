@@ -3,7 +3,7 @@ import { Instagram, Facebook, Twitter, Youtube, Mail, Phone, MapPin } from "luci
 
 export function Footer() {
   return (
-    <footer id="contact" className="border-t border-border bg-[var(--surface)]">
+    <footer id="contact" className="scroll-mt-24 border-t border-border bg-[var(--surface)]">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-4">
         <div>
           <p className="font-display text-2xl tracking-[0.28em]">SARKAR</p>
