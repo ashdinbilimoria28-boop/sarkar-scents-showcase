@@ -8,6 +8,8 @@ import productMain from "@/assets/product-main.jpg";
 import product2 from "@/assets/product-2.jpg";
 import product3 from "@/assets/product-3.jpg";
 import product4 from "@/assets/product-4.jpg";
+import { useCart } from "@/lib/cart";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/product")({
   head: () => ({
@@ -66,7 +68,12 @@ function ProductPage() {
   const [size, setSize] = useState<string>(sizes[1] ?? "100 ml");
   const [edition, setEdition] = useState<string>(editions[0] ?? "Sports Classic");
   const current = gallery[active] ?? gallery[0]!;
+  const { addItem } = useCart();
 
+  const add = () => {
+    addItem({ name: "SARKAR SPORTS Eau de Parfum", size, edition, price: 2499 });
+    toast.success("Added to bag", { description: `${size} · ${edition}` });
+  };
 
   return (
     <div className="min-h-screen">
@@ -166,10 +173,16 @@ function ProductPage() {
             </div>
 
             <div className="mt-9 flex flex-wrap gap-4">
-              <button className="rounded-sm bg-primary px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.03]">
+              <button onClick={add} className="rounded-sm bg-primary px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.03]">
                 Add to Cart
               </button>
-              <button className="rounded-sm border border-border px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.2em] text-foreground transition-colors hover:border-primary hover:text-primary">
+              <button
+                onClick={() => {
+                  add();
+                  toast("Checkout is a demo", { description: "Open your bag to review the order." });
+                }}
+                className="rounded-sm border border-border px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.2em] text-foreground transition-colors hover:border-primary hover:text-primary"
+              >
                 Buy Now
               </button>
             </div>
@@ -226,7 +239,7 @@ function ProductPage() {
             <p className="mt-4 text-muted-foreground">
               {size} · {edition} — dispatched within 24 hours with free returns.
             </p>
-            <button className="mt-8 rounded-sm bg-primary px-10 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.03]">
+            <button onClick={add} className="mt-8 rounded-sm bg-primary px-10 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.03]">
               Add to Cart — ₹2,499
             </button>
           </div>
