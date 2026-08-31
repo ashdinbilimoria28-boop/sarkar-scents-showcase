@@ -99,7 +99,7 @@ function ProductPage() {
                 >
                   <SmartImage
                     name={g.src}
-                    widths={[400]}
+                    widths={g.widths.slice(0, 1)}
                     sizes="(min-width: 1024px) 12vw, 22vw"
                     alt={g.alt}
                     width={300}
