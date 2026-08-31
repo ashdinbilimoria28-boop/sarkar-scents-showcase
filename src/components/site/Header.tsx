@@ -15,6 +15,10 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur">
+      <div className="bg-primary px-5 py-2 text-center text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground sm:text-sm">
+        Two 5ML samples free with every order today.
+      </div>
+
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
         <Link to="/" className="flex items-baseline gap-2">
           <span className="font-display text-2xl tracking-[0.28em] text-foreground">SARKAR</span>
