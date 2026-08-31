@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import { CartSheet } from "@/components/site/CartSheet";
+
+const CartSheet = lazy(() =>
+  import("@/components/site/CartSheet").then((m) => ({ default: m.CartSheet })),
+);
 
 const navLinks = [
   { label: "Home", to: "/" as const },
@@ -35,7 +38,9 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <CartSheet />
+          <Suspense fallback={<div className="size-10" aria-hidden="true" />}>
+            <CartSheet />
+          </Suspense>
           <Link
             to="/product"
             className="hidden rounded-sm border border-primary/60 bg-primary px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground transition-transform hover:scale-[1.03] sm:inline-block"
@@ -43,6 +48,7 @@ export function Header() {
             Shop Now
           </Link>
           <button
+            type="button"
             onClick={() => setOpen((v) => !v)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}

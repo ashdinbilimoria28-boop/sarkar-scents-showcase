@@ -47,6 +47,7 @@ export function CartSheet() {
                   </p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => removeItem(item.id)}
                   aria-label={`Remove ${item.name}`}
                   className="text-muted-foreground transition-colors hover:text-destructive"
@@ -57,6 +58,7 @@ export function CartSheet() {
               <div className="mt-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={() => setQty(item.id, item.qty - 1)}
                     aria-label="Decrease quantity"
                     className="flex size-7 items-center justify-center rounded-sm border border-border hover:border-primary"
@@ -65,6 +67,7 @@ export function CartSheet() {
                   </button>
                   <span className="w-6 text-center text-sm">{item.qty}</span>
                   <button
+                    type="button"
                     onClick={() => setQty(item.id, item.qty + 1)}
                     aria-label="Increase quantity"
                     className="flex size-7 items-center justify-center rounded-sm border border-border hover:border-primary"
@@ -84,6 +87,7 @@ export function CartSheet() {
             <span className="font-display text-2xl">{formatINR(total)}</span>
           </div>
           <button
+            type="button"
             disabled={count === 0}
             onClick={() => {
               toast.success("Order placed", {

@@ -111,3 +111,8 @@
   text-transform: uppercase;
   color: var(--primary);
 }
+
+@utility content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}

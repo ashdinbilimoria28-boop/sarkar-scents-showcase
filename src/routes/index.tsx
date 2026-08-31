@@ -19,9 +19,11 @@ export const Route = createFileRoute("/")({
         content: "Bold, clean, 12-hour performance fragrance built for movement.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/img/hero-banner-1024.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "canonical", href: "/" },
       {
         rel: "preload",
         as: "image",
@@ -97,7 +99,7 @@ function Home() {
       <Header />
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden">
+        <section className="relative min-h-[640px] overflow-hidden md:min-h-[760px]">
           <SmartImage
             name="hero-banner"
             widths={[640, 1024, 1600, 1920]}
@@ -155,7 +157,7 @@ function Home() {
         </section>
 
         {/* Categories */}
-        <section className="mx-auto max-w-6xl px-5 py-20">
+        <section className="mx-auto max-w-6xl px-5 py-20 content-visibility-auto">
           <p className="eyebrow">The Collection</p>
           <h2 className="mt-3 text-4xl md:text-5xl">Explore the SARKAR range</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -181,7 +183,10 @@ function Home() {
         </section>
 
         {/* Reviews */}
-        <section id="reviews" className="scroll-mt-24 border-y border-border bg-[var(--surface)]">
+        <section
+          id="reviews"
+          className="content-visibility-auto scroll-mt-24 border-y border-border bg-[var(--surface)]"
+        >
           <div className="mx-auto max-w-6xl px-5 py-20">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>

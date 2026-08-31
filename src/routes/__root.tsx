@@ -7,12 +7,13 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { Suspense, lazy, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
-import { Toaster } from "@/components/ui/sonner";
+
+const Toaster = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
 
 function NotFoundComponent() {
   return (
@@ -54,6 +55,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
+            type="button"
             onClick={() => {
               router.invalidate();
               reset();
@@ -86,7 +88,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "author", content: "SARKAR Fragrances" },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "SARKAR Fragrances" },
+      { property: "og:image", content: "/img/hero-banner-1024.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "index, follow" },
     ],
     links: [
       {
@@ -109,6 +114,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         crossOrigin: "anonymous",
       },
       { rel: "stylesheet", href: "/fonts/fonts.css" },
+      { rel: "canonical", href: "/" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
@@ -141,7 +147,9 @@ function RootComponent() {
       <CartProvider>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
-        <Toaster />
+        <Suspense fallback={null}>
+          <Toaster />
+        </Suspense>
       </CartProvider>
     </QueryClientProvider>
   );
