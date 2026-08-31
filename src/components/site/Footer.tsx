@@ -79,7 +79,10 @@ export function Footer() {
           <h3 className="text-sm uppercase tracking-[0.2em] text-foreground">Contact</h3>
           <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
             <li>
-              <a href="mailto:care@sarkarfragrances.com" className="flex items-center gap-2 hover:text-primary">
+              <a
+                href="mailto:care@sarkarfragrances.com"
+                className="flex items-center gap-2 hover:text-primary"
+              >
                 <Mail className="size-4 text-primary" /> care@sarkarfragrances.com
               </a>
             </li>

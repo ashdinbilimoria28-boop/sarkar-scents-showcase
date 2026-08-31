@@ -5,7 +5,6 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SmartImage } from "@/components/site/SmartImage";
 import { useCart } from "@/lib/cart";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/product")({
   head: () => ({
@@ -29,21 +28,57 @@ export const Route = createFileRoute("/product")({
 });
 
 const gallery = [
-  { src: "hero-banner", widths: [640, 1024, 1600], alt: "SARKAR SPORTS eau de parfum bottle on display over wet stone" },
-  { src: "product-main", widths: [480, 800, 1200], alt: "SARKAR SPORTS fragrance bottle studio product photography" },
-  { src: "product-2", widths: [400, 800], alt: "SARKAR SPORTS bottle detail macro shot on dark slate" },
-  { src: "product-3", widths: [400, 800], alt: "SARKAR SPORTS fragrance being applied after a workout" },
-  { src: "product-4", widths: [400, 800], alt: "SARKAR SPORTS fragrance notes: bergamot, cedar, mint and sea salt" },
+  {
+    src: "hero-banner",
+    widths: [640, 1024, 1600],
+    alt: "SARKAR SPORTS eau de parfum bottle on display over wet stone",
+  },
+  {
+    src: "product-main",
+    widths: [480, 800, 1200],
+    alt: "SARKAR SPORTS fragrance bottle studio product photography",
+  },
+  {
+    src: "product-2",
+    widths: [400, 800],
+    alt: "SARKAR SPORTS bottle detail macro shot on dark slate",
+  },
+  {
+    src: "product-3",
+    widths: [400, 800],
+    alt: "SARKAR SPORTS fragrance being applied after a workout",
+  },
+  {
+    src: "product-4",
+    widths: [400, 800],
+    alt: "SARKAR SPORTS fragrance notes: bergamot, cedar, mint and sea salt",
+  },
 ];
 
 const sizes = ["50 ml", "100 ml", "150 ml"];
 const editions = ["Sports Classic", "Sports Intense", "Sports Aqua"];
 
 const benefits = [
-  { icon: Timer, title: "12-Hour Longevity", copy: "High 20% parfum load keeps projection strong all day." },
-  { icon: Wind, title: "Fresh Citrus Open", copy: "Bergamot and mint hit clean, never sharp or synthetic." },
-  { icon: Droplets, title: "Sweat-Resistant", copy: "Formulated to stay true through training and humidity." },
-  { icon: Leaf, title: "Skin-Kind Blend", copy: "Vegan, cruelty-free, dermatologically tested base." },
+  {
+    icon: Timer,
+    title: "12-Hour Longevity",
+    copy: "High 20% parfum load keeps projection strong all day.",
+  },
+  {
+    icon: Wind,
+    title: "Fresh Citrus Open",
+    copy: "Bergamot and mint hit clean, never sharp or synthetic.",
+  },
+  {
+    icon: Droplets,
+    title: "Sweat-Resistant",
+    copy: "Formulated to stay true through training and humidity.",
+  },
+  {
+    icon: Leaf,
+    title: "Skin-Kind Blend",
+    copy: "Vegan, cruelty-free, dermatologically tested base.",
+  },
 ];
 
 const specs: [string, string][] = [
@@ -64,11 +99,12 @@ function ProductPage() {
   const [size, setSize] = useState<string>(sizes[1] ?? "100 ml");
   const [edition, setEdition] = useState<string>(editions[0] ?? "Sports Classic");
   const current = gallery[active] ?? gallery[0]!;
+  const [notice, setNotice] = useState("");
   const { addItem } = useCart();
 
   const add = () => {
     addItem({ name: "SARKAR SPORTS Eau de Parfum", size, edition, price: 2499 });
-    toast.success("Added to bag", { description: `${size} · ${edition}` });
+    setNotice(`Added to bag: ${size} · ${edition}`);
   };
 
   return (
@@ -172,14 +208,26 @@ function ProductPage() {
               </div>
             </div>
 
+            {notice && (
+              <p
+                className="mt-6 rounded-sm border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-primary"
+                role="status"
+              >
+                {notice}
+              </p>
+            )}
+
             <div className="mt-9 flex flex-wrap gap-4">
-              <button onClick={add} className="rounded-sm bg-primary px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.03]">
+              <button
+                onClick={add}
+                className="rounded-sm bg-primary px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.03]"
+              >
                 Add to Cart
               </button>
               <button
                 onClick={() => {
                   add();
-                  toast("Checkout is a demo", { description: "Open your bag to review the order." });
+                  setNotice("Added to bag. Open your bag to review this demo order.");
                 }}
                 className="rounded-sm border border-border px-8 py-3.5 text-sm font-semibold uppercase tracking-[0.2em] text-foreground transition-colors hover:border-primary hover:text-primary"
               >
@@ -239,7 +287,10 @@ function ProductPage() {
             <p className="mt-4 text-muted-foreground">
               {size} · {edition} — dispatched within 24 hours with free returns.
             </p>
-            <button onClick={add} className="mt-8 rounded-sm bg-primary px-10 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.03]">
+            <button
+              onClick={add}
+              className="mt-8 rounded-sm bg-primary px-10 py-4 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.03]"
+            >
               Add to Cart — ₹2,499
             </button>
           </div>
