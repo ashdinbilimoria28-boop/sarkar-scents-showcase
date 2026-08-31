@@ -2,10 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Star, Truck, ShieldCheck, Sparkles, Wind, Timer, FlaskConical } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import heroBanner from "@/assets/hero-banner.jpg";
-import product2 from "@/assets/product-2.jpg";
-import product3 from "@/assets/product-3.jpg";
-import product4 from "@/assets/product-4.jpg";
+import { SmartImage } from "@/components/site/SmartImage";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,6 +21,18 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: "/img/hero-banner-1600.avif",
+        type: "image/avif",
+        imageSrcSet:
+          "/img/hero-banner-640.avif 640w, /img/hero-banner-1024.avif 1024w, /img/hero-banner-1600.avif 1600w, /img/hero-banner-1920.avif 1920w",
+        imageSizes: "100vw",
+        fetchPriority: "high",
+      },
+    ],
   }),
   component: Home,
 });
@@ -33,21 +42,21 @@ const categories = [
     icon: Wind,
     title: "Sport & Active",
     copy: "Fresh aquatic-citrus scents that hold through training and travel.",
-    image: product3,
+    image: "product-3",
     alt: "SARKAR SPORTS fragrance used by an athlete in a locker room",
   },
   {
     icon: Sparkles,
     title: "Signature Woods",
     copy: "Cedar and vetiver bases for a grounded, confident dry-down.",
-    image: product2,
+    image: "product-2",
     alt: "SARKAR SPORTS black fragrance bottle resting on wet slate",
   },
   {
     icon: FlaskConical,
     title: "Pure Ingredients",
     copy: "Ethically sourced naturals blended at 20% parfum concentration.",
-    image: product4,
+    image: "product-4",
     alt: "Bergamot, cedar wood, mint and sea salt notes of SARKAR SPORTS on slate",
   },
 ];
@@ -89,8 +98,11 @@ function Home() {
       <main>
         {/* Hero */}
         <section className="relative overflow-hidden">
-          <img
-            src={heroBanner}
+          <SmartImage
+            name="hero-banner"
+            widths={[640, 1024, 1600, 1920]}
+            sizes="100vw"
+            priority
             alt="SARKAR SPORTS eau de parfum bottle on display over wet stone"
             width={1920}
             height={1088}
@@ -149,13 +161,14 @@ function Home() {
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {categories.map((c) => (
               <article key={c.title} className="surface-card group overflow-hidden rounded-md">
-                <img
-                  src={c.image}
+                <SmartImage
+                  name={c.image}
+                  widths={[400, 800]}
+                  sizes="(min-width: 768px) 33vw, 100vw"
                   alt={c.alt}
-                  loading="lazy"
                   width={900}
                   height={900}
-                  className="aspect-4/3 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="aspect-4/3 w-full object-cover"
                 />
                 <div className="p-6">
                   <c.icon className="size-5 text-primary" />

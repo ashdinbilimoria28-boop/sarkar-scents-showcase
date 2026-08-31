@@ -3,11 +3,7 @@ import { useState } from "react";
 import { Star, Wind, Timer, Droplets, Leaf, Check } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import heroBanner from "@/assets/hero-banner.jpg";
-import productMain from "@/assets/product-main.jpg";
-import product2 from "@/assets/product-2.jpg";
-import product3 from "@/assets/product-3.jpg";
-import product4 from "@/assets/product-4.jpg";
+import { SmartImage } from "@/components/site/SmartImage";
 import { useCart } from "@/lib/cart";
 import { toast } from "sonner";
 
@@ -33,11 +29,11 @@ export const Route = createFileRoute("/product")({
 });
 
 const gallery = [
-  { src: heroBanner, alt: "SARKAR SPORTS eau de parfum bottle on display over wet stone" },
-  { src: productMain, alt: "SARKAR SPORTS fragrance bottle studio product photography" },
-  { src: product2, alt: "SARKAR SPORTS bottle detail macro shot on dark slate" },
-  { src: product3, alt: "SARKAR SPORTS fragrance being applied after a workout" },
-  { src: product4, alt: "SARKAR SPORTS fragrance notes: bergamot, cedar, mint and sea salt" },
+  { src: "hero-banner", widths: [640, 1024, 1600], alt: "SARKAR SPORTS eau de parfum bottle on display over wet stone" },
+  { src: "product-main", widths: [480, 800, 1200], alt: "SARKAR SPORTS fragrance bottle studio product photography" },
+  { src: "product-2", widths: [400, 800], alt: "SARKAR SPORTS bottle detail macro shot on dark slate" },
+  { src: "product-3", widths: [400, 800], alt: "SARKAR SPORTS fragrance being applied after a workout" },
+  { src: "product-4", widths: [400, 800], alt: "SARKAR SPORTS fragrance notes: bergamot, cedar, mint and sea salt" },
 ];
 
 const sizes = ["50 ml", "100 ml", "150 ml"];
@@ -81,10 +77,13 @@ function ProductPage() {
       <main>
         <section className="mx-auto grid max-w-6xl gap-12 px-5 py-14 lg:grid-cols-2">
           <div>
-            <img
-              src={current.src}
+            <SmartImage
+              key={current.src}
+              name={current.src}
+              widths={current.widths}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              priority
               alt={current.alt}
-
               width={1200}
               height={900}
               className="aspect-4/3 w-full rounded-md border border-border object-cover"
@@ -98,10 +97,11 @@ function ProductPage() {
                     active === i + 1 ? "border-primary" : "border-border hover:border-primary/50"
                   }`}
                 >
-                  <img
-                    src={g.src}
+                  <SmartImage
+                    name={g.src}
+                    widths={g.widths.slice(0, 1)}
+                    sizes="(min-width: 1024px) 12vw, 22vw"
                     alt={g.alt}
-                    loading="lazy"
                     width={300}
                     height={300}
                     className="aspect-square w-full object-cover"
