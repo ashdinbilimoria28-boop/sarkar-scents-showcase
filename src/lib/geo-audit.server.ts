@@ -111,7 +111,8 @@ function safePublicUrl(raw: string, allowRootIp = false): URL {
   }
   if (isIp && /^\d+(?:\.\d+){3}$/.test(hostname)) {
     const parts = hostname.split(".").map(Number);
-    const [a, b] = parts;
+    const a = parts[0] ?? -1;
+    const b = parts[1] ?? -1;
     if (
       parts.some((part) => part < 0 || part > 255) ||
       a === 0 ||
@@ -286,8 +287,8 @@ function extractMeta(html: string, wanted: string): string | null {
   let match: RegExpExecArray | null;
   while ((match = regex.exec(html))) {
     const attrs = tagAttributes(match[0]);
-    const keys = [attrs.name, attrs.property, attrs.itemprop].filter(Boolean).map((key) => key?.toLowerCase());
-    if (keys.includes(wanted.toLowerCase()) && attrs.content) return attrs.content.trim();
+    const keys = [attrs["name"], attrs["property"], attrs["itemprop"]].filter(Boolean).map((key) => key?.toLowerCase());
+    if (keys.includes(wanted.toLowerCase()) && attrs["content"]) return attrs["content"].trim();
   }
   return null;
 }
@@ -435,7 +436,7 @@ function readPage(fetchResult: FetchResult, homeOrigin: string): PageData {
   const visibleText = plainText(html);
   const wordCount = visibleText ? visibleText.split(/\s+/).filter(Boolean).length : 0;
   const links = extractTagContent(html, "a").flatMap((anchor) => {
-    const href = anchor.attrs.href;
+    const href = anchor.attrs["href"];
     if (!href || href.startsWith("#") || /^(?:mailto:|tel:|javascript:|data:)/i.test(href)) return [];
     try {
       const url = new URL(href, fetchResult.url);
@@ -450,7 +451,7 @@ function readPage(fetchResult: FetchResult, homeOrigin: string): PageData {
   const schemaTypes = new Set<string>();
   let schemaErrors = 0;
   for (const block of extractTagContent(html, "script")) {
-    if (!/application\/ld\+json/i.test(block.attrs.type ?? "")) continue;
+    if (!/application\/ld\+json/i.test(block.attrs["type"] ?? "")) continue;
     try {
       const parsed = JSON.parse(block.content) as unknown;
       collectSchemaTypes(parsed, schemaTypes);
@@ -464,11 +465,11 @@ function readPage(fetchResult: FetchResult, homeOrigin: string): PageData {
   let match: RegExpExecArray | null;
   while ((match = canonicalTag.exec(html))) {
     const attrs = tagAttributes(match[0]);
-    if (attrs.rel?.split(/\s+/).includes("canonical") && attrs.href) {
+    if (attrs["rel"]?.split(/\s+/).includes("canonical") && attrs["href"]) {
       try {
-        canonical = new URL(attrs.href, fetchResult.url).toString();
+        canonical = new URL(attrs["href"], fetchResult.url).toString();
       } catch {
-        canonical = attrs.href;
+        canonical = attrs["href"];
       }
       break;
     }
@@ -478,7 +479,7 @@ function readPage(fetchResult: FetchResult, homeOrigin: string): PageData {
   const imageList: { alt: string | null }[] = [];
   while ((match = images.exec(html))) {
     const attrs = tagAttributes(match[0]);
-    imageList.push({ alt: Object.hasOwn(attrs, "alt") ? attrs.alt : null });
+    imageList.push({ alt: Object.hasOwn(attrs, "alt") ? attrs["alt"] ?? "" : null });
   }
   return {
     url: fetchResult.url,
@@ -499,7 +500,7 @@ function readPage(fetchResult: FetchResult, homeOrigin: string): PageData {
     schemaErrors,
     canonical,
     robotsDirective,
-    language: tagAttributes(html.match(/<html\b[^>]*>/i)?.[0] ?? "").lang ?? null,
+    language: tagAttributes(html.match(/<html\b[^>]*>/i)?.[0] ?? "")["lang"] ?? null,
     linkTexts: links.map((link) => link.text).filter(Boolean),
     responseError: fetchResult.error,
     truncated: fetchResult.truncated,
@@ -850,7 +851,7 @@ async function auditOne(rawInput: string, mainSite = false): Promise<GeoAuditRep
     crawlers,
     citations: { sources: citationSources, externalLinks: links.length, authoritativeRatingsAvailable: false },
     entitySignals: { brand: name, productOrService: descriptor || "No summary was published in the page metadata.", contact: email ? decodeEntities(email) : null, socialProfiles: [...new Set(socialUrls)].slice(0, 12), aboutPage },
-    schema: { detectedTypes: [...new Set(pageData.flatMap((item) => item.schemaTypes))].sort(), validBlocks: pageData.reduce((sum, item) => sum + Math.max(0, extractTagContent(item.html, "script").filter((block) => /application\/ld\+json/i.test(block.attrs.type ?? "")).length - item.schemaErrors), 0), invalidBlocks: pageData.reduce((sum, item) => sum + item.schemaErrors, 0), suggestedJsonLd },
+    schema: { detectedTypes: [...new Set(pageData.flatMap((item) => item.schemaTypes))].sort(), validBlocks: pageData.reduce((sum, item) => sum + Math.max(0, extractTagContent(item.html, "script").filter((block) => /application\/ld\+json/i.test(block.attrs["type"] ?? "")).length - item.schemaErrors), 0), invalidBlocks: pageData.reduce((sum, item) => sum + item.schemaErrors, 0), suggestedJsonLd },
     aiReadiness: readiness,
     observedAiVisibility: { available: false, message: "AI mentions, citations and answer rankings were not queried. Live AI visibility needs a dedicated search/provider integration." },
     eeat: trustSignals,

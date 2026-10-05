@@ -98,7 +98,7 @@ export interface GeoAuditReport {
   crawlers: CrawlerAccess[];
   citations: { sources: CitationSource[]; externalLinks: number; authoritativeRatingsAvailable: false };
   entitySignals: { brand: string; productOrService: string; contact: string | null; socialProfiles: string[]; aboutPage: string | null };
-  schema: { detectedTypes: string[]; validBlocks: number; invalidBlocks: number; suggestedJsonLd: Record<string, unknown> | null };
+  schema: { detectedTypes: string[]; validBlocks: number; invalidBlocks: number; suggestedJsonLd: Record<string, string | string[]> | null };
   aiReadiness: { platform: string; technicalReady: boolean | null; evidence: string }[];
   observedAiVisibility: { available: false; message: string };
   eeat: { dimension: string; score: number | null; evidence: string[] }[];
