@@ -8,6 +8,7 @@ const navLinks = [
   { label: "Product Details", to: "/product" as const },
   { label: "Reviews", to: "/" as const, hash: "reviews" },
   { label: "Contact", to: "/" as const, hash: "contact" },
+  { label: "GEO Audit", to: "/audit" as const },
 ];
 
 export function Header() {

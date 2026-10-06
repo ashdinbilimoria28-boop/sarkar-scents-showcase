@@ -787,7 +787,7 @@ async function auditOne(rawInput: string, mainSite = false): Promise<GeoAuditRep
   const socialUrls = pageData.flatMap((item) => item.externalUrls).filter((url) => /(?:instagram|facebook|linkedin|youtube|tiktok|x\.com|twitter)\./i.test(url));
   const aboutPage = pageCandidates.find((url) => /\/(?:about|our-story|company)(?:\/|$)/i.test(new URL(url).pathname)) ?? null;
   const descriptor = page.description || page.visibleText.slice(0, 280).trim();
-  const suggestedJsonLd: Record<string, unknown> | null = rootOk
+  const suggestedJsonLd: Record<string, string | string[]> | null = rootOk
     ? {
         "@context": "https://schema.org",
         "@type": "Organization",

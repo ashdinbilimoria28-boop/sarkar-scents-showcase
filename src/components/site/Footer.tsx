@@ -45,6 +45,11 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link to="/audit" className="hover:text-primary">
+                GEO Audit
+              </Link>
+            </li>
+            <li>
               <Link to="/" hash="reviews" className="hover:text-primary">
                 Reviews
               </Link>

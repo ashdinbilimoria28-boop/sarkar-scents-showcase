@@ -111,3 +111,75 @@
   text-transform: uppercase;
   color: var(--primary);
 }
+
+.geo-shell {
+  --background: oklch(0.985 0.004 220);
+  --foreground: oklch(0.22 0.025 235);
+  --surface: oklch(0.955 0.008 220);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.025 235);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.025 235);
+  --primary: oklch(0.53 0.12 164);
+  --primary-foreground: oklch(0.99 0.003 220);
+  --secondary: oklch(0.94 0.01 220);
+  --secondary-foreground: oklch(0.28 0.025 235);
+  --muted: oklch(0.95 0.008 220);
+  --muted-foreground: oklch(0.5 0.018 235);
+  --accent: oklch(0.93 0.035 165);
+  --accent-foreground: oklch(0.27 0.06 165);
+  --destructive: oklch(0.56 0.2 27);
+  --destructive-foreground: oklch(0.99 0.003 220);
+  --border: oklch(0.88 0.012 220);
+  --input: oklch(0.88 0.012 220);
+  --ring: oklch(0.53 0.12 164);
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.geo-shell .geo-warn-text {
+  color: oklch(0.57 0.14 72);
+}
+
+.geo-shell .geo-warn-bg {
+  background: oklch(0.96 0.04 82);
+}
+
+.geo-shell .geo-pass-bg {
+  background: oklch(0.94 0.04 164);
+}
+
+.geo-shell .geo-progress {
+  width: 100%;
+  height: 0.5rem;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  appearance: none;
+  background: var(--muted);
+}
+
+.geo-shell .geo-progress::-webkit-progress-bar {
+  border-radius: 999px;
+  background: var(--muted);
+}
+
+.geo-shell .geo-progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.geo-shell .geo-progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+@media print {
+  .geo-shell .geo-no-print {
+    display: none !important;
+  }
+
+  .geo-shell {
+    background: white;
+  }
+}
