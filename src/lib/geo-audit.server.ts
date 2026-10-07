@@ -527,7 +527,7 @@ function evaluatePage(page: PageData, index: number, origin: string): AuditCheck
   const add = (id: string, category: string, label: string, status: AuditStatus, evidence: string, fix?: string) => {
     checks.push(makeCheck(`${pageKey}-${id}`, category, label, status, evidence, fix, page.url));
   };
-  const fetched = page.statusCode !== null;
+  const fetched = page.statusCode !== null && page.statusCode >= 200 && page.statusCode < 300 && !page.truncated;
   const titleLength = page.title.length;
   add("page-fetch", "technical", "Page responds successfully", page.statusCode !== null && page.statusCode >= 200 && page.statusCode < 400 ? "pass" : page.statusCode === null ? "unknown" : "fail", page.statusCode ? `HTTP ${page.statusCode} · ${page.responseMs ?? "—"} ms from the audit server.` : page.responseError ?? "No response received.", "Restore the page or review server access rules.");
   add("https", "technical", "Secure HTTPS connection", page.url.startsWith("https:") ? "pass" : fetched ? "fail" : "unknown", page.url.startsWith("https:") ? "The final page address uses HTTPS." : fetched ? `Final address: ${page.url}` : "Unable to verify the final address.", "Serve the site over HTTPS and redirect HTTP visitors to its secure version.");
@@ -537,7 +537,9 @@ function evaluatePage(page: PageData, index: number, origin: string): AuditCheck
   add("h1", "technical", "A clear main heading", h1.length === 1 && Boolean(h1[0]?.text) ? "pass" : fetched && h1.length === 0 ? "fail" : fetched ? "warning" : "unknown", h1.length ? `${h1.length} H1 heading(s): ${h1.map((item) => item.text).filter(Boolean).join(" · ") || "empty heading"}` : fetched ? "No H1 heading was found." : "The page could not be read.", "Use one descriptive H1 that clearly identifies this page.");
   const h2Count = page.headings.filter((heading) => heading.tag === "h2").length;
   add("heading-hierarchy", "technical", "Useful section headings", h2Count > 0 ? "pass" : fetched ? "warning" : "unknown", `${h2Count} H2 and ${page.headings.filter((heading) => heading.tag === "h3").length} H3 headings found.`, "Organize the page with descriptive H2 and H3 headings.");
-  add("canonical", "technical", "Canonical page URL", page.canonical ? new URL(page.canonical).origin === origin ? "pass" : "warning" : fetched ? "warning" : "unknown", page.canonical ?? (fetched ? "No canonical link was found." : "The page could not be read."), "Add one canonical URL that points to the preferred version of this page.");
+  let canonicalMatches = false;
+  try { canonicalMatches = Boolean(page.canonical) && new URL(page.canonical ?? "").href === new URL(page.url).href; } catch { /* Invalid canonicals are warnings, not a scan failure. */ }
+  add("canonical", "technical", "Canonical page URL", page.canonical ? canonicalMatches ? "pass" : "warning" : fetched ? "warning" : "unknown", page.canonical ?? (fetched ? "No canonical link was found." : "The page could not be read."), "Add one self-referencing canonical URL for this page, unless a verified duplicate requires another preferred URL.");
   const robots = (page.robotsDirective ?? "").toLowerCase();
   add("indexable", "technical", "Indexing directives", /(?:noindex|none)/.test(robots) ? "fail" : page.robotsDirective || fetched ? "pass" : "unknown", page.robotsDirective ? `Directives: ${page.robotsDirective}` : fetched ? "No noindex directive was found in the page meta or X-Robots-Tag response header." : "Unable to verify indexing directives.", "Remove noindex only if this page should appear in search results.");
   const viewport = /<meta\b[^>]*name\s*=\s*["']viewport["']/i.test(page.html);
@@ -562,7 +564,7 @@ function evaluatePage(page: PageData, index: number, origin: string): AuditCheck
   const questionFaq = page.headings.some((heading) => heading.text.endsWith("?")) || /\b(frequently asked questions|\bfaq\b)/i.test(page.visibleText);
   add("faq", "content", "FAQ or question-and-answer content", questionFaq ? "pass" : fetched ? "warning" : "unknown", questionFaq ? "FAQ wording or question-style headings were found." : fetched ? "No FAQ wording or question headings were found." : "The page could not be read.", "Answer common customer questions on pages where a real FAQ would help.");
   add("content-depth", "content", "Useful visible content depth", bodyWords.length >= 300 ? "pass" : bodyWords.length >= 100 ? "warning" : fetched ? "fail" : "unknown", fetched ? `${bodyWords.length} visible words in the HTML text scan; this is not a quality judgment.` : "The page could not be read.", "Add useful, original detail where the page's purpose warrants it; avoid padding pages to reach a target word count.");
-  const schemaReady = page.statusCode !== null;
+  const schemaReady = fetched;
   add("schema-json", "schema", "Readable JSON-LD structured data", page.schemaErrors === 0 && page.schemaTypes.length > 0 ? "pass" : page.schemaErrors > 0 ? "fail" : schemaReady ? "warning" : "unknown", page.schemaTypes.length ? `Detected: ${page.schemaTypes.join(", ")}${page.schemaErrors ? `; ${page.schemaErrors} malformed JSON-LD block(s).` : "."}` : schemaReady ? `${page.schemaErrors ? `${page.schemaErrors} malformed JSON-LD block(s).` : "No JSON-LD blocks were found."}` : "The page could not be read.", "Validate JSON-LD syntax and add only schema types that accurately describe visible page content.");
   const orgTypes = page.schemaTypes.some((type) => ["Organization", "Brand", "Corporation"].includes(type));
   add("schema-org", "schema", "Organization or brand schema", orgTypes ? "pass" : schemaReady ? "warning" : "unknown", orgTypes ? "Organization or Brand structured data appears on this page." : schemaReady ? "Organization/Brand schema was not detected on this page." : "The page could not be read.", "Add Organization or Brand schema using verified brand details if it accurately represents the business.");
@@ -573,7 +575,7 @@ function evaluatePage(page: PageData, index: number, origin: string): AuditCheck
   const contact = page.internalUrls.some((url) => /\/(?:contact|contact-us)(?:\/|$)/i.test(new URL(url).pathname)) || /mailto:/i.test(page.html) || /\bcontact us\b/i.test(page.visibleText);
   add("about", "trust", "About / organization information", aboutLink ? "pass" : fetched ? "warning" : "unknown", aboutLink ? "About/Our Story wording or an internal About page link was found." : fetched ? "No About/Our Story wording or standard About link was detected in the sampled page." : "The page could not be read.", "Add a clear About page with genuine company and product background.");
   add("contact", "trust", "Contact information", contact ? "pass" : fetched ? "warning" : "unknown", contact ? "A contact link, contact wording, or mail link was found." : fetched ? "No contact link or email link was detected on this page." : "The page could not be read.", "Provide a working contact page or address customers can use.");
-  const policy = page.internalUrls.some((url) => /\/(?:privacy|terms|returns|shipping|policy)(?:\/|$)/i.test(new URL(url).pathname));
+  const policy = page.internalUrls.some((url) => /\/(?:privacy|terms|returns|shipping|policy)(?:\/|$)/i.test(new URL(url).pathname)) || /<a\b[^>]*href=["'][^"']*(?:\/support)?#shipping["'][^>]*>[\s\S]*?shipping[\s\S]*?<\/a>/i.test(page.html);
   add("policies", "trust", "Customer policy links", policy ? "pass" : fetched ? "warning" : "unknown", policy ? "A privacy, terms, returns, shipping, or policy page link was detected." : fetched ? "No standard customer-policy URL was detected on this page." : "The page could not be read.", "Link to the genuine privacy, terms, and relevant customer policies.");
   const authors = Boolean(extractMeta(page.html, "author")) || /\bby\s+[A-Z][a-z]+\s+[A-Z][a-z]+/.test(page.visibleText);
   add("author", "trust", "Authorship signals", authors ? "pass" : fetched ? "warning" : "unknown", authors ? "An author meta tag or a basic byline pattern was found." : fetched ? "No author meta tag or simple byline pattern was detected; not all product pages require a named author." : "The page could not be read.", "Identify qualified authors or reviewers on expert editorial pages where applicable.");
@@ -585,6 +587,14 @@ function evaluatePage(page: PageData, index: number, origin: string): AuditCheck
   add("origin-response", "performance", "Origin response time", page.responseMs !== null && page.responseMs < 1200 ? "pass" : page.responseMs !== null && page.responseMs < 3000 ? "warning" : page.responseMs !== null ? "fail" : "unknown", page.responseMs === null ? page.responseError ?? "No response timing available." : `${page.responseMs} ms measured from the audit server's request; this is not browser Core Web Vitals or PageSpeed Insights.`, "Check hosting and caching if server response time is consistently high; run a browser-based performance test for real user experience.");
   const bloat = new TextEncoder().encode(page.html).byteLength;
   add("html-size", "performance", "HTML response size", bloat < 200_000 ? "pass" : bloat < BODY_LIMIT ? "warning" : "fail", `${Math.round(bloat / 1024)} KB of returned HTML${page.truncated ? " (response was capped at 850 KB)" : ""}.`, "Reduce unnecessary HTML payload and embedded markup; images, fonts, and browser rendering were not measured by this audit.");
+  if (!fetched) {
+    for (const check of checks) {
+      if (["page-fetch", "https"].some((id) => check.id === `${pageKey}-${id}`)) continue;
+      check.status = "unknown";
+      check.severity = "unknown";
+      check.evidence = page.truncated ? "The response was truncated; this content check could not be verified." : "A successful complete page response was not available; content checks are unverified.";
+    }
+  }
   return checks;
 }
 
@@ -669,7 +679,7 @@ async function auditOne(rawInput: string, mainSite = false): Promise<GeoAuditRep
   });
   let discoveredPages = pageCandidates.length;
   const disallowedByAll = !crawlerAllowed(robotsRules.groups, "sarkar-geoaudit", "/" );
-  const crawlCandidates = disallowedByAll ? [] : pageCandidates.slice(0, PAGE_LIMIT - 1);
+  const crawlCandidates = disallowedByAll ? [] : pageCandidates.filter((url) => crawlerAllowed(robotsRules.groups, "sarkar-geoaudit", new URL(url).pathname)).slice(0, PAGE_LIMIT - 1);
   if (disallowedByAll) warnings.push("robots.txt disallows the audit user-agent from crawling additional pages; the user-requested home page was still checked.");
   const pageResponses = await Promise.all(
     crawlCandidates.map((url) => fetchPublic(url, homeHost, "text/html,application/xhtml+xml;q=0.9,*/*;q=0.4")),
@@ -683,7 +693,7 @@ async function auditOne(rawInput: string, mainSite = false): Promise<GeoAuditRep
     return page.checks;
   });
 
-  const rootOk = homeResult.status !== null;
+  const rootOk = homeResult.status !== null && homeResult.status >= 200 && homeResult.status < 300 && !homeResult.truncated;
   const add = (id: string, category: string, label: string, status: AuditStatus, evidence: string, fix?: string) => {
     allChecks.push(makeCheck(id, category, label, status, evidence, fix, homePage.url));
   };
@@ -736,7 +746,8 @@ async function auditOne(rawInput: string, mainSite = false): Promise<GeoAuditRep
   const allLinkCount = pageData.reduce((sum, page) => sum + page.internalUrls.length, 0);
   const brokenCrawled = pageData.filter((page) => page.statusCode === 404).length;
   add("crawled-broken-pages", "technical", "Sampled page response errors", brokenCrawled === 0 ? (rootOk ? "pass" : "unknown") : "fail", `${pageData.length} pages checked; ${brokenCrawled} returned HTTP 404. Only URLs included in this limited crawl are counted.`, "Fix broken links for pages that should exist or redirect them to their closest relevant replacement.");
-  add("citation-count", "authority", "First-party citation links", citationSources.length >= 3 ? "pass" : citationSources.length > 0 ? "warning" : rootOk ? "warning" : "unknown", `${citationSources.length} distinct external domains linked from the sampled pages. Backlinks, domain authority, and source quality were not measured.`, "Where useful, cite trustworthy sources for factual claims. Independent mentions/backlinks require a separate external-data integration.");
+  add("citation-count", "authority", "Independent authority and citations", "unknown", `${citationSources.length} outgoing domains were observed, but outgoing links do not establish independent authority. Backlinks, independent mentions, and source quality were not measured.`, "Verify independent mentions and backlinks through an external-data service; generic social links are not authority evidence.");
+  add("observed-ai-visibility", "readiness", "Observed AI answers and citations", "unknown", "No AI answer engine was queried. Crawler access is reported separately and does not establish answer visibility.");
   add("internal-coverage", "internal", "Discovered same-site links", allLinkCount >= 8 ? "pass" : allLinkCount > 0 ? "warning" : rootOk ? "fail" : "unknown", `${allLinkCount} same-origin link targets found on the ${pageData.length} pages checked; ${pageCandidates.length} additional page URLs were discovered. This is a limited sample, not a full link graph.`, "Link important pages from relevant navigation and content, with descriptive anchor text.");
   add("crawl-html", "performance", "HTML rendered in the initial response", pageData.some((page) => page.wordCount > 60) ? "pass" : rootOk ? "warning" : "unknown", pageData.some((page) => page.wordCount > 60) ? "Readable content was present in the initial HTML response; client-side rendering completeness is not verified." : rootOk ? "Little readable text was found in the initial HTML response; a browser-rendered check is needed for JavaScript-heavy pages." : "The page could not be read.", "Make essential page information available in crawlable HTML; verify rendering with a browser test.");
   const rules = robotsRules.groups.flatMap((group) => group.rules.map((rule) => `${group.agents.join(", ")}: ${rule.allow ? "Allow" : "Disallow"} ${rule.path}`));
@@ -814,7 +825,7 @@ async function auditOne(rawInput: string, mainSite = false): Promise<GeoAuditRep
     { dimension: "Authoritativeness", ids: ["source-links", "citation-count"] },
     { dimension: "Trustworthiness", ids: ["https", "contact", "policies"] },
   ].map(({ dimension, ids }) => {
-    const signals = allChecks.filter((check) => ids.some((id) => check.id.endsWith(id)));
+    const signals = allChecks.filter((check) => ids.includes(check.id.replace(/^\d+-/, "")));
     const evidence = signals.filter((check) => check.status === "pass").map((check) => check.evidence);
     const score = aggregateScore(signals).score;
     return { dimension, score, evidence: evidence.length ? evidence : signals.filter((check) => check.status !== "pass").map((check) => check.evidence) };
@@ -881,7 +892,7 @@ function competitorSummary(inputUrl: string, report: GeoAuditReport): Competitor
     contentScore: report.categoryScores.find((category) => category.id === "content")?.score ?? null,
     schemaScore: report.categoryScores.find((category) => category.id === "schema")?.score ?? null,
     entityScore: report.categoryScores.find((category) => category.id === "entity")?.score ?? null,
-    citationReadiness: report.categoryScores.find((category) => category.id === "content")?.score ?? null,
+    citationReadiness: report.categoryScores.find((category) => category.id === "readiness")?.score ?? null,
     authorityScore: report.categoryScores.find((category) => category.id === "authority")?.score ?? null,
     ...(report.overallScore === null ? { error: "Not enough accessible, measurable content was available to calculate this score." } : {}),
   };
