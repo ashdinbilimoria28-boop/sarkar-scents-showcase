@@ -78,6 +78,7 @@ export const Route = createRootRouteWithContext()({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "XdbmViiAWbVesWbYiGdqrLBR_aSzl1rOETXQFZz8UK8" },
       { property: "og:site_name", content: "SARKAR Fragrances" },
       { name: "author", content: "SARKAR Fragrances" },
       { property: "og:type", content: "website" },
