@@ -5,8 +5,10 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SmartImage } from "@/components/site/SmartImage";
 import { useCart } from "@/lib/cart";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/product")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "SARKAR SPORTS Eau de Parfum 100ml | Product Details & Specs" },
@@ -22,7 +24,24 @@ export const Route = createFileRoute("/product")({
       },
       { property: "og:type", content: "product" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://sarkar-scents-showcase.lovable.app/product" },
     ],
+    links: [
+      { rel: "canonical", href: "https://sarkar-scents-showcase.lovable.app/product" },
+      { rel: "preload", as: "image", href: "/img/hero-banner-1024.avif", type: "image/avif", imageSrcSet: "/img/hero-banner-640.avif 640w, /img/hero-banner-1024.avif 1024w, /img/hero-banner-1600.avif 1600w", imageSizes: "(min-width: 1024px) 50vw, 100vw", fetchPriority: "high" },
+    ],
+    scripts: [{ type: "application/ld+json", children: JSON.stringify({
+      "@context": "https://schema.org", "@type": "Product",
+      "@id": "https://sarkar-scents-showcase.lovable.app/product#sports",
+      name: "SARKAR SPORTS Eau de Parfum", url: "https://sarkar-scents-showcase.lovable.app/product",
+      image: "https://sarkar-scents-showcase.lovable.app/img/product-main-800.jpg",
+      description: "A crisp citrus-mint opening settles into cedar and amber musk.",
+      brand: { "@type": "Brand", name: "SARKAR" },
+      category: "Fragrances", additionalProperty: [
+        { "@type": "PropertyValue", name: "Concentration", value: "Eau de Parfum · 20%" },
+        { "@type": "PropertyValue", name: "Volume", value: "50 ml / 100 ml / 150 ml" },
+      ],
+    }) }],
   }),
   component: ProductPage,
 });
@@ -98,9 +117,10 @@ function ProductPage() {
   const [active, setActive] = useState(0);
   const [size, setSize] = useState<string>(sizes[1] ?? "100 ml");
   const [edition, setEdition] = useState<string>(editions[0] ?? "Sports Classic");
-  const current = gallery[active] ?? gallery[0]!;
+  const current = gallery[active] ?? gallery[0];
   const [notice, setNotice] = useState("");
   const { addItem } = useCart();
+  if (!current) return null;
 
   const add = () => {
     addItem({ name: "SARKAR SPORTS Eau de Parfum", size, edition, price: 2499 });
@@ -126,10 +146,12 @@ function ProductPage() {
             />
             <div className="mt-4 grid grid-cols-4 gap-3">
               {gallery.slice(1).map((g, i) => (
-                <button
+                <Button variant="ghost"
                   key={g.src}
+                  aria-label={`View ${g.alt}`}
+                  aria-pressed={active === i + 1}
                   onClick={() => setActive(i + 1)}
-                  className={`overflow-hidden rounded-sm border transition-colors ${
+                  className={`h-auto p-0 overflow-hidden rounded-sm border transition-colors ${
                     active === i + 1 ? "border-primary" : "border-border hover:border-primary/50"
                   }`}
                 >
@@ -142,7 +164,7 @@ function ProductPage() {
                     height={300}
                     className="aspect-square w-full object-cover"
                   />
-                </button>
+                </Button>
               ))}
             </div>
           </div>

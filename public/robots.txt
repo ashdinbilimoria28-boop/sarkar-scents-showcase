@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://sarkar-scents-showcase.lovable.app/sitemap.xml

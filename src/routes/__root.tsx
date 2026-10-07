@@ -73,15 +73,12 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext()({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "SARKAR Fragrances | SPORTS Eau de Parfum" },
-      {
-        name: "description",
-        content: "SARKAR Fragrances — performance eau de parfum built for movement.",
-      },
+      { property: "og:site_name", content: "SARKAR Fragrances" },
       { name: "author", content: "SARKAR Fragrances" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -109,6 +106,11 @@ export const Route = createRootRouteWithContext()({
       { rel: "stylesheet", href: "/fonts/fonts.css" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
+    scripts: [{ type: "application/ld+json", children: JSON.stringify({
+      "@context": "https://schema.org", "@type": "Organization",
+      "@id": "https://sarkar-scents-showcase.lovable.app/#organization",
+      name: "SARKAR Fragrances", url: "https://sarkar-scents-showcase.lovable.app/",
+    }) }],
   }),
 
   shellComponent: RootShell,

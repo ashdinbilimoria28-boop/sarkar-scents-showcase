@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/accordion";
 
 export const Route = createFileRoute("/support")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Support: Shipping, Returns & Fragrance Guide | SARKAR" },
@@ -24,7 +25,9 @@ export const Route = createFileRoute("/support")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://sarkar-scents-showcase.lovable.app/support" },
     ],
+    links: [{ rel: "canonical", href: "https://sarkar-scents-showcase.lovable.app/support" }],
   }),
   component: SupportPage,
 });

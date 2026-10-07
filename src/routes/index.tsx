@@ -5,6 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { SmartImage } from "@/components/site/SmartImage";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "SARKAR Fragrances | SPORTS Eau de Parfum for Everyday Performance" },
@@ -20,8 +21,10 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://sarkar-scents-showcase.lovable.app/" },
     ],
     links: [
+      { rel: "canonical", href: "https://sarkar-scents-showcase.lovable.app/" },
       {
         rel: "preload",
         as: "image",
@@ -33,6 +36,12 @@ export const Route = createFileRoute("/")({
         fetchPriority: "high",
       },
     ],
+    scripts: [{ type: "application/ld+json", children: JSON.stringify({
+      "@context": "https://schema.org", "@type": "WebSite",
+      "@id": "https://sarkar-scents-showcase.lovable.app/#website",
+      name: "SARKAR Fragrances", url: "https://sarkar-scents-showcase.lovable.app/",
+      publisher: { "@id": "https://sarkar-scents-showcase.lovable.app/#organization" },
+    }) }],
   }),
   component: Home,
 });

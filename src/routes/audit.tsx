@@ -29,6 +29,7 @@ import { runGeoAudit } from "@/lib/geo-audit.functions";
 import type { AuditCheck, AuditStatus, GeoAuditReport } from "@/lib/geo-audit.types";
 
 export const Route = createFileRoute("/audit")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "GEO Audit Workspace | SARKAR Fragrances" },
@@ -44,7 +45,9 @@ export const Route = createFileRoute("/audit")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://sarkar-scents-showcase.lovable.app/audit" },
     ],
+    links: [{ rel: "canonical", href: "https://sarkar-scents-showcase.lovable.app/audit" }],
   }),
   component: AuditWorkspace,
 });
@@ -121,7 +124,7 @@ function FindingRow({ check, number }: { check: AuditCheck; number: number }) {
 
 function AuditWorkspace() {
   const audit = useServerFn(runGeoAudit);
-  const [siteUrl, setSiteUrl] = useState("");
+  const [siteUrl, setSiteUrl] = useState("https://sarkar-scents-showcase.lovable.app");
   const [competitors, setCompetitors] = useState<string[]>([]);
   const [report, setReport] = useState<GeoAuditReport | null>(null);
   const [tab, setTab] = useState<AuditTab>("overview");
@@ -220,7 +223,7 @@ function AuditWorkspace() {
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.72fr)] lg:items-end">
             <div>
               <p className="text-xs font-semibold uppercase text-primary">Generative search · live diagnostics</p>
-              <h1 className="mt-3 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">See what your website makes easy to cite.</h1>
+              <h1 className="mt-3 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">SARKAR GEO Audit</h1>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
                 Inspect crawl access, page structure, content signals, and trust cues. Every score is tied to a measured observation or marked unverified.
               </p>
@@ -348,7 +351,7 @@ function AuditWorkspace() {
                 </div>
                 <div className="py-1">
                   <p className="text-xs font-semibold uppercase text-muted-foreground">Overall GEO score</p>
-                  <p className="mt-2 text-xl font-semibold">{report.grade}</p>
+                  <p className="mt-2 text-xl font-semibold">{report.overallScore === null ? "Unrated" : report.overallScore >= 90 ? "A" : report.overallScore >= 75 ? "B" : report.overallScore >= 60 ? "C" : report.overallScore >= 40 ? "D" : "F"} · {report.grade}</p>
                   <p className="mt-1 text-sm text-muted-foreground">{report.overallScore === null ? "Insufficient measurable evidence" : "Based on measured checks only"}</p>
                 </div>
               </div>
@@ -450,7 +453,7 @@ function AuditWorkspace() {
                   {report.pages.map((page) => (
                     <article key={page.url} className="grid gap-4 py-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
                       <div className="min-w-0"><a href={page.url} target="_blank" rel="noreferrer noopener" className="inline-flex max-w-full items-center gap-2 break-all text-sm font-medium text-primary hover:underline">{page.url}<ExternalLink className="size-3 shrink-0" /></a><p className="mt-2 text-sm">{page.title || "No page title detected"}</p><p className="mt-1 text-xs text-muted-foreground">HTTP {page.statusCode ?? "—"} · {page.wordCount} words · {page.internalLinks} internal links · {page.imageCount} images · {page.schemaTypes.length} schema type(s)</p><p className="mt-2 text-xs leading-relaxed text-muted-foreground">{page.description || "No meta description detected"}</p></div>
-                      <div className="flex items-center gap-5"><div className="text-right"><p className="font-mono text-xl font-semibold">{scoreText(page.geoScore)}</p><p className="text-[11px] text-muted-foreground">page score</p></div><details className="text-xs"><summary className="cursor-pointer text-primary">Checks</summary><div className="absolute z-10 mt-2 max-h-72 w-[min(90vw,32rem)] overflow-auto border border-border bg-card p-3 shadow-lg">{page.checks.map((check) => <p key={check.id} className="border-b border-border py-2"><span className={`mr-2 font-semibold ${findingTone(check.status)}`}>{statusLabel(check.status)}</span>{check.label}<span className="mt-1 block text-muted-foreground">{check.evidence}</span></p>)}</div></details></div>
+                      <div className="flex flex-wrap items-start gap-5"><div className="text-right"><p className="font-mono text-xl font-semibold">{scoreText(page.geoScore)}</p><p className="text-[11px] text-muted-foreground">page score</p></div><details className="max-w-full text-xs"><summary className="cursor-pointer text-primary">Checks</summary><div className="mt-2 max-h-72 w-full max-w-sm overflow-auto border border-border bg-card p-3">{page.checks.map((check) => <p key={check.id} className="border-b border-border py-2"><span className={`mr-2 font-semibold ${findingTone(check.status)}`}>{statusLabel(check.status)}</span>{check.label}<span className="mt-1 block break-words text-muted-foreground">{check.evidence}</span></p>)}</div></details></div>
                     </article>
                   ))}
                   {!report.pages.length ? <p className="py-8 text-sm text-muted-foreground">No website pages were available to inspect.</p> : null}
