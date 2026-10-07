@@ -24,7 +24,7 @@ export function SmartImage({
   className,
   priority = false,
 }: SmartImageProps) {
-  const fallbackWidth = widths[widths.length - 1]!;
+  const fallbackWidth = widths[widths.length - 1] ?? width;
   return (
     <picture>
       <source type="image/avif" srcSet={srcset(name, widths, "avif")} sizes={sizes} />
