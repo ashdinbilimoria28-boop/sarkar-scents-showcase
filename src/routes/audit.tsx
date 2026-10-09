@@ -27,26 +27,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { runGeoAudit } from "@/lib/geo-audit.functions";
 import type { AuditCheck, AuditStatus, GeoAuditReport } from "@/lib/geo-audit.types";
+import { searchMeta } from "@/lib/search-content";
 
 export const Route = createFileRoute("/audit")({
   staticData: { sitemap: true },
   head: () => ({
-    meta: [
-      { title: "GEO Audit Workspace | SARKAR Fragrances" },
-      {
-        name: "description",
-        content:
-          "Run an evidence-based generative search visibility audit with technical findings, crawler access, structured data, and prioritized actions.",
-      },
-      { property: "og:title", content: "GEO Audit Workspace | SARKAR Fragrances" },
-      {
-        property: "og:description",
-        content: "Measure website readiness for generative search with evidence-backed findings.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:url", content: "https://sarkar-scents-showcase.lovable.app/audit" },
-    ],
+    meta: searchMeta("SARKAR GEO Audit | AI Crawler & Search Readiness Checks", "Run a SARKAR GEO audit to review public-page structure, AI crawler access, structured data and evidence-based search readiness, with clear prioritized findings.", "/audit"),
     links: [{ rel: "canonical", href: "https://sarkar-scents-showcase.lovable.app/audit" }],
   }),
   component: AuditWorkspace,
@@ -225,7 +211,7 @@ function AuditWorkspace() {
               <p className="text-xs font-semibold uppercase text-primary">Generative search · live diagnostics</p>
               <h1 className="mt-3 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">SARKAR GEO Audit</h1>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-                Inspect crawl access, page structure, content signals, and trust cues. Every score is tied to a measured observation or marked unverified.
+                SARKAR GEO Audit examines a bounded sample of public pages for crawler access, page structure, content signals and structured data. Reports connect measured checks to evidence and suggested actions, while unavailable checks remain unverified. Compare up to three websites and export a snapshot. Technical readiness does not establish rankings or AI citations.
               </p>
             </div>
             <div className="grid grid-cols-3 gap-4 border-t border-border pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">

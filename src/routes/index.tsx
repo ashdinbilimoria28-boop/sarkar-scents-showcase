@@ -3,26 +3,12 @@ import { Star, Truck, ShieldCheck, Sparkles, Wind, Timer, FlaskConical } from "l
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SmartImage } from "@/components/site/SmartImage";
+import { faqSchema, fragranceImage, productQuestions, searchMeta, siteOrigin } from "@/lib/search-content";
 
 export const Route = createFileRoute("/")({
   staticData: { sitemap: true },
   head: () => ({
-    meta: [
-      { title: "SARKAR Fragrances | SPORTS Eau de Parfum for Everyday Performance" },
-      {
-        name: "description",
-        content:
-          "SARKAR SPORTS is a long-lasting performance fragrance with citrus, mint and cedar. Shop the hero scent with fast shipping and a satisfaction guarantee.",
-      },
-      { property: "og:title", content: "SARKAR Fragrances | SPORTS Eau de Parfum" },
-      {
-        property: "og:description",
-        content: "Bold, clean, 12-hour performance fragrance built for movement.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:url", content: "https://sarkar-scents-showcase.lovable.app/" },
-    ],
+    meta: searchMeta("SARKAR SPORTS Eau de Parfum | Fragrance Collection Guide", "Explore SARKAR SPORTS eau de parfum, citrus and woody fragrance notes, available bottle sizes, product specifications and answers to common shopping questions.", "/", fragranceImage),
     links: [
       { rel: "canonical", href: "https://sarkar-scents-showcase.lovable.app/" },
       {
@@ -40,7 +26,13 @@ export const Route = createFileRoute("/")({
       "@context": "https://schema.org", "@type": "WebSite",
       "@id": "https://sarkar-scents-showcase.lovable.app/#website",
       name: "SARKAR Fragrances", url: "https://sarkar-scents-showcase.lovable.app/",
+      description: "SARKAR fragrance collection featuring SPORTS eau de parfum.",
       publisher: { "@id": "https://sarkar-scents-showcase.lovable.app/#organization" },
+    }) }, { type: "application/ld+json", children: JSON.stringify(faqSchema(`${siteOrigin}/`)) }, { type: "application/ld+json", children: JSON.stringify({
+      "@context": "https://schema.org", "@type": "Product", "@id": `${siteOrigin}/product#sports`,
+      name: "SARKAR SPORTS Eau de Parfum", url: `${siteOrigin}/product`, image: fragranceImage,
+      description: "SARKAR SPORTS eau de parfum with citrus, mint and woody notes.",
+      brand: { "@type": "Brand", name: "SARKAR" }, category: "Fragrances",
     }) }],
   }),
   component: Home,
@@ -112,6 +104,7 @@ function Home() {
             widths={[640, 1024, 1600, 1920]}
             sizes="100vw"
             priority
+            fallbackSrc={fragranceImage}
             alt="SARKAR SPORTS eau de parfum bottle on display over wet stone"
             width={1920}
             height={1088}
@@ -126,8 +119,7 @@ function Home() {
               <span className="text-gradient">Scented for impact.</span>
             </h1>
             <p className="mt-6 max-w-lg text-lg text-muted-foreground">
-              SARKAR SPORTS delivers 12 hours of crisp citrus, cool mint and cedar — the fragrance
-              that keeps pace with you.
+              SARKAR SPORTS is the featured eau de parfum in the SARKAR fragrance collection. Explore its citrus, mint and woody notes, compare listed bottle sizes, and view the gallery and specifications. The product and support pages provide fragrance details and shopping information. The shopping bag currently supports demo orders only.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link
@@ -213,6 +205,13 @@ function Home() {
                 </blockquote>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section id="faq" className="mx-auto max-w-6xl px-5 py-16">
+          <h2 className="text-4xl">SARKAR SPORTS questions</h2>
+          <div className="mt-6 divide-y divide-border">
+            {productQuestions.map(({ q, a }) => <article key={q} className="py-5"><h3 className="text-2xl">{q}</h3><p className="mt-2 max-w-3xl text-muted-foreground">{a}</p></article>)}
           </div>
         </section>
 

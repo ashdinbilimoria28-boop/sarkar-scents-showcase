@@ -9,6 +9,7 @@ type SmartImageProps = {
   className?: string;
   /** Set for the LCP image only: eager + high fetch priority */
   priority?: boolean;
+  fallbackSrc?: string;
 };
 
 const srcset = (name: string, widths: number[], ext: string) =>
@@ -23,6 +24,7 @@ export function SmartImage({
   sizes,
   className,
   priority = false,
+  fallbackSrc,
 }: SmartImageProps) {
   const fallbackWidth = widths[widths.length - 1] ?? width;
   return (
@@ -30,7 +32,7 @@ export function SmartImage({
       <source type="image/avif" srcSet={srcset(name, widths, "avif")} sizes={sizes} />
       <source type="image/webp" srcSet={srcset(name, widths, "webp")} sizes={sizes} />
       <img
-        src={`/img/${name}-${fallbackWidth}.jpg`}
+        src={fallbackSrc ?? `/img/${name}-${fallbackWidth}.jpg`}
         srcSet={srcset(name, widths, "jpg")}
         sizes={sizes}
         alt={alt}

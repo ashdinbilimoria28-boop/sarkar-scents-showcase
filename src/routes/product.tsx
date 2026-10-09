@@ -6,26 +6,12 @@ import { Footer } from "@/components/site/Footer";
 import { SmartImage } from "@/components/site/SmartImage";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
+import { fragranceImage, searchMeta } from "@/lib/search-content";
 
 export const Route = createFileRoute("/product")({
   staticData: { sitemap: true },
   head: () => ({
-    meta: [
-      { title: "SARKAR SPORTS Eau de Parfum 100ml | Product Details & Specs" },
-      {
-        name: "description",
-        content:
-          "SARKAR SPORTS eau de parfum: bergamot, mint and cedar, 20% concentration, 12-hour wear. See sizes, specs, benefits and buy online.",
-      },
-      { property: "og:title", content: "SARKAR SPORTS Eau de Parfum 100ml" },
-      {
-        property: "og:description",
-        content: "Citrus-mint-cedar performance fragrance with 12-hour longevity.",
-      },
-      { property: "og:type", content: "product" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:url", content: "https://sarkar-scents-showcase.lovable.app/product" },
-    ],
+    meta: searchMeta("SARKAR SPORTS Eau de Parfum | Bottle Sizes & Scent Notes", "Discover SARKAR SPORTS eau de parfum with its citrus, mint and woody notes. Compare listed bottle sizes, explore the product gallery and read fragrance details.", "/product", fragranceImage, "product"),
     links: [
       { rel: "canonical", href: "https://sarkar-scents-showcase.lovable.app/product" },
       { rel: "preload", as: "image", href: "/img/hero-banner-1024.avif", type: "image/avif", imageSrcSet: "/img/hero-banner-640.avif 640w, /img/hero-banner-1024.avif 1024w, /img/hero-banner-1600.avif 1600w", imageSizes: "(min-width: 1024px) 50vw, 100vw", fetchPriority: "high" },
@@ -34,7 +20,7 @@ export const Route = createFileRoute("/product")({
       "@context": "https://schema.org", "@type": "Product",
       "@id": "https://sarkar-scents-showcase.lovable.app/product#sports",
       name: "SARKAR SPORTS Eau de Parfum", url: "https://sarkar-scents-showcase.lovable.app/product",
-      image: "https://sarkar-scents-showcase.lovable.app/img/product-main-800.jpg",
+      image: fragranceImage,
       description: "A crisp citrus-mint opening settles into cedar and amber musk.",
       brand: { "@type": "Brand", name: "SARKAR" },
       category: "Fragrances", additionalProperty: [
@@ -139,6 +125,7 @@ function ProductPage() {
               widths={current.widths}
               sizes="(min-width: 1024px) 50vw, 100vw"
               priority
+              fallbackSrc={current.src === "hero-banner" ? fragranceImage : undefined}
               alt={current.alt}
               width={1200}
               height={900}
@@ -172,6 +159,7 @@ function ProductPage() {
           <div>
             <p className="eyebrow">SARKAR Fragrances</p>
             <h1 className="mt-3 text-4xl md:text-5xl">SARKAR SPORTS Eau de Parfum</h1>
+            <p className="mt-4 text-muted-foreground">SARKAR SPORTS is an eau de parfum with citrus, mint and woody notes. This page brings together the product gallery, listed bottle sizes, edition selectors and fragrance specifications. Compare the top, heart and base notes before choosing a bottle. The shopping bag is a demonstration and does not collect payment.</p>
             <div className="mt-4 flex items-center gap-3">
               <div className="flex gap-0.5 text-[var(--gold)]">
                 {Array.from({ length: 5 }).map((_, i) => (
