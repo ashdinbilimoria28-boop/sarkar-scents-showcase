@@ -5,3 +5,4 @@
 - [ ] Implement usable report export/share and competitor/audience visibility honest unavailable states.
 - [ ] Validate the flow, route metadata, build, and mobile/desktop layout.
 - [ ] Improve SARKAR search readiness toward an A with accurate metadata, structured data, sitemap and accessible controls; never fabricate an A.
+- [ ] Apply the new cross-page semantic headings, 40–60 word factual summaries, factual JSON-LD, explicit AI crawler rules, metadata lengths, social images and descriptive image alternatives.

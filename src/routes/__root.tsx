@@ -111,6 +111,7 @@ export const Route = createRootRouteWithContext()({
       "@context": "https://schema.org", "@type": "Organization",
       "@id": "https://sarkar-scents-showcase.lovable.app/#organization",
       name: "SARKAR Fragrances", url: "https://sarkar-scents-showcase.lovable.app/",
+      description: "SARKAR fragrance collection featuring SPORTS eau de parfum.",
     }) }],
   }),
 

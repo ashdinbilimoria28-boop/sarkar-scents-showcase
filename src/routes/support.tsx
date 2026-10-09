@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { searchMeta } from "@/lib/search-content";
 import {
   Accordion,
   AccordionContent,
@@ -11,22 +12,7 @@ import {
 export const Route = createFileRoute("/support")({
   staticData: { sitemap: true },
   head: () => ({
-    meta: [
-      { title: "Support: Shipping, Returns & Fragrance Guide | SARKAR" },
-      {
-        name: "description",
-        content:
-          "SARKAR Fragrances support: shipping and returns policy, authenticity promise, how to wear SPORTS, and answers to common questions.",
-      },
-      { property: "og:title", content: "SARKAR Support: Shipping, Returns & FAQ" },
-      {
-        property: "og:description",
-        content: "Everything about delivery, returns, authenticity and wearing SARKAR SPORTS.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:url", content: "https://sarkar-scents-showcase.lovable.app/support" },
-    ],
+    meta: searchMeta("SARKAR Fragrance Support | SPORTS Care & Shopping FAQ", "Find SARKAR SPORTS fragrance support, published shipping and returns information, bottle care guidance, authenticity details and common fragrance questions.", "/support"),
     links: [{ rel: "canonical", href: "https://sarkar-scents-showcase.lovable.app/support" }],
   }),
   component: SupportPage,
@@ -94,7 +80,7 @@ function SupportPage() {
             <p className="eyebrow">Help Centre</p>
             <h1 className="mt-3 text-4xl md:text-5xl">Support &amp; FAQ</h1>
             <p className="mt-4 max-w-xl text-muted-foreground">
-              Delivery, returns, authenticity and how to get the most out of SARKAR SPORTS.
+              Find SARKAR SPORTS fragrance guidance, published delivery and returns information, and answers to common questions in one place. The sections below cover bottle care, application, authenticity information and shopping support. Use the product page to compare fragrance specifications. The website currently offers a demo shopping bag rather than paid checkout.
             </p>
           </div>
         </section>
@@ -103,11 +89,11 @@ function SupportPage() {
           {sections.map((s) => (
             <section key={s.id} id={s.id} className="scroll-mt-24">
               <h2 className="text-3xl">{s.title}</h2>
-              <div className="mt-4 space-y-3 text-muted-foreground">
+              <ul className="mt-4 list-disc space-y-3 pl-5 text-muted-foreground">
                 {s.body.map((p) => (
-                  <p key={p}>{p}</p>
+                  <li key={p}>{p}</li>
                 ))}
-              </div>
+              </ul>
             </section>
           ))}
 
